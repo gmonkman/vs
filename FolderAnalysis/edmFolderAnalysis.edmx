@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="edmFolderAnalysis.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="edmFolderAnalysisStoreContainer">
+    <EntitySet Name="files" EntityType="edmFolderAnalysis.Store.files" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="sessions" EntityType="edmFolderAnalysis.Store.sessions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="attributes" EntityType="edmFolderAnalysis.Store.attributes" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="filesattribute" Association="edmFolderAnalysis.Store.filesattribute">
+      <End Role="files" EntitySet="files" />
+      <End Role="attribute" EntitySet="attributes" />
+    </AssociationSet>
+    <AssociationSet Name="sessionfiles" Association="edmFolderAnalysis.Store.sessionfiles">
+      <End Role="session" EntitySet="sessions" />
+      <End Role="files" EntitySet="files" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="files">
+    <Key>
+      <PropertyRef Name="filesid" />
+    </Key>
+    <Property Name="filesid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="file_name_full" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="folder" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="file" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="session_sessionid" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sessions">
+    <Key>
+      <PropertyRef Name="sessionid" />
+    </Key>
+    <Property Name="sessionid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="run_time" Type="datetime" Nullable="false" />
+    <Property Name="root" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="completed" Type="bit" Nullable="false" DefaultValue="false" />
+  </EntityType>
+  <EntityType Name="attributes">
+    <Key>
+      <PropertyRef Name="attributeid" />
+    </Key>
+    <Property Name="attributeid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="value" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="files_filesid" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <Association Name="filesattribute">
+    <End Role="files" Type="edmFolderAnalysis.Store.files" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="attribute" Type="edmFolderAnalysis.Store.attributes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="files">
+        <PropertyRef Name="filesid" />
+      </Principal>
+      <Dependent Role="attribute">
+        <PropertyRef Name="files_filesid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="sessionfiles">
+    <End Role="session" Type="edmFolderAnalysis.Store.sessions" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="files" Type="edmFolderAnalysis.Store.files" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="session">
+        <PropertyRef Name="sessionid" />
+      </Principal>
+      <Dependent Role="files">
+        <PropertyRef Name="session_sessionid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="edmFolderAnalysis" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="edmFolderAnalysisContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="files" EntityType="edmFolderAnalysis.files" />
+          <EntitySet Name="sessions" EntityType="edmFolderAnalysis.session" />
+          <EntitySet Name="attributes" EntityType="edmFolderAnalysis.attribute" />
+          <AssociationSet Name="filesattribute" Association="edmFolderAnalysis.filesattribute">
+            <End Role="files" EntitySet="files" />
+            <End Role="attribute" EntitySet="attributes" />
+          </AssociationSet>
+          <AssociationSet Name="sessionfiles" Association="edmFolderAnalysis.sessionfiles">
+            <End Role="session" EntitySet="sessions" />
+            <End Role="files" EntitySet="files" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="files">
+          <Key>
+            <PropertyRef Name="filesid" />
+          </Key>
+          <Property Type="Guid" Name="filesid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="String" Name="file_name_full" Nullable="false" MaxLength="Max" />
+          <Property Type="String" Name="folder" Nullable="false" FixedLength="false" MaxLength="Max" />
+          <Property Type="String" Name="file" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="attributes" Relationship="edmFolderAnalysis.filesattribute" FromRole="files" ToRole="attribute" />
+          <NavigationProperty Name="session" Relationship="edmFolderAnalysis.sessionfiles" FromRole="files" ToRole="session" />
+          <Property Type="Guid" Name="session_sessionid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="session">
+          <Key>
+            <PropertyRef Name="sessionid" />
+          </Key>
+          <Property Type="Guid" Name="sessionid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="DateTime" Name="run_time" Nullable="false" />
+          <NavigationProperty Name="files" Relationship="edmFolderAnalysis.sessionfiles" FromRole="session" ToRole="files" />
+          <Property Type="String" Name="root" Nullable="false" FixedLength="false" MaxLength="Max" />
+          <Property Type="Boolean" Name="completed" Nullable="false" DefaultValue="false" />
+        </EntityType>
+        <EntityType Name="attribute">
+          <Key>
+            <PropertyRef Name="attributeid" />
+          </Key>
+          <Property Type="Guid" Name="attributeid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="String" Name="name" Nullable="false" FixedLength="false" MaxLength="50" />
+          <Property Type="String" Name="value" Nullable="false" FixedLength="false" MaxLength="Max" />
+          <NavigationProperty Name="file" Relationship="edmFolderAnalysis.filesattribute" FromRole="attribute" ToRole="files" />
+          <Property Type="Guid" Name="files_filesid" Nullable="false" />
+        </EntityType>
+        <Association Name="filesattribute">
+          <End Type="edmFolderAnalysis.files" Role="files" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="edmFolderAnalysis.attribute" Role="attribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="files">
+              <PropertyRef Name="filesid" />
+            </Principal>
+            <Dependent Role="attribute">
+              <PropertyRef Name="files_filesid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="sessionfiles">
+          <End Type="edmFolderAnalysis.session" Role="session" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="edmFolderAnalysis.files" Role="files" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="session">
+              <PropertyRef Name="sessionid" />
+            </Principal>
+            <Dependent Role="files">
+              <PropertyRef Name="session_sessionid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="edmFolderAnalysisStoreContainer" CdmEntityContainer="edmFolderAnalysisContainer">
+    <EntitySetMapping Name="files">
+      <EntityTypeMapping TypeName="IsTypeOf(edmFolderAnalysis.files)">
+        <MappingFragment StoreEntitySet="files">
+          <ScalarProperty Name="filesid" ColumnName="filesid" />
+          <ScalarProperty Name="file_name_full" ColumnName="file_name_full" />
+          <ScalarProperty Name="folder" ColumnName="folder" />
+          <ScalarProperty Name="file" ColumnName="file" />
+          <ScalarProperty Name="session_sessionid" ColumnName="session_sessionid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sessions">
+      <EntityTypeMapping TypeName="IsTypeOf(edmFolderAnalysis.session)">
+        <MappingFragment StoreEntitySet="sessions">
+          <ScalarProperty Name="sessionid" ColumnName="sessionid" />
+          <ScalarProperty Name="run_time" ColumnName="run_time" />
+          <ScalarProperty Name="root" ColumnName="root" />
+          <ScalarProperty Name="completed" ColumnName="completed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="attributes">
+      <EntityTypeMapping TypeName="IsTypeOf(edmFolderAnalysis.attribute)">
+        <MappingFragment StoreEntitySet="attributes">
+          <ScalarProperty Name="attributeid" ColumnName="attributeid" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="value" ColumnName="value" />
+          <ScalarProperty Name="files_filesid" ColumnName="files_filesid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,1 @@
+C:\Development\FolderAnalysis\bin\Debug\FolderAnalysis.exe.config
